@@ -2,7 +2,6 @@ from os import remove as osremove, path as ospath, mkdir
 from threading import Thread
 from PIL import Image
 from telegram.ext import CommandHandler, CallbackQueryHandler
-from telegram import InlineKeyboardMarkup
 
 from bot import AS_DOC_USERS, AS_MEDIA_USERS, dispatcher, AS_DOCUMENT, app, AUTO_DELETE_MESSAGE_DURATION, DB_URI
 from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, auto_delete_message
@@ -37,7 +36,7 @@ def getleechinfo(from_user):
     if AUTO_DELETE_MESSAGE_DURATION == -1:
         buttons.sbutton("Close", f"leechset {user_id} close")
 
-    button = InlineKeyboardMarkup(buttons.build_menu(1))
+    button = buttons.build_menu(1)
 
     text = f"<u>𝐋𝐞𝐞𝐜𝐡 𝐒𝐞𝐭𝐭𝐢𝐧𝐠𝐬 𝐟𝐨𝐫 <a href='tg://user?id={user_id}'>{name}</a></u>\n"\
            f"𝐋𝐞𝐞𝐜𝐡 𝐓𝐲𝐩𝐞<b>{ltype}</b>\n"\
@@ -104,7 +103,7 @@ def setThumb(update, context):
             mkdir(path)
         photo_msg = app.get_messages(update.message.chat.id, reply_to_message_ids=update.message.message_id)
         photo_dir = app.download_media(photo_msg, file_name=path)
-        des_dir = ospath.join(path, str(user_id) + ".jpg")
+        des_dir = ospath.join(path, f'{user_id}.jpg')
         Image.open(photo_dir).convert("RGB").save(des_dir, "JPEG")
         osremove(photo_dir)
         if DB_URI is not None:
